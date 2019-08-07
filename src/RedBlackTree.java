@@ -1,12 +1,13 @@
-import java.awt.*;
-
 public class RedBlackTree {
     //external node
-    public static final RedBlackNode EXTERNAL_NODE = new RedBlackNode(null, null, null, "BLACK", Integer.MAX_VALUE);
     private RedBlackNode root;
 
     public RedBlackTree() {
-        root = EXTERNAL_NODE;
+        root = null;
+    }
+
+    public void insert(Integer data) {
+        insert(new RedBlackNode(null, null, null, "RED", data.intValue()));
     }
 
     public void insert(RedBlackNode newNode) {
@@ -19,13 +20,14 @@ public class RedBlackTree {
             //Step 2: fixUp
             fixUp(newNode);
         }
+        root.color = "BLACK";
     }
 
     public void bstInsert(RedBlackNode newNode) {
         RedBlackNode curr = root;
-        RedBlackNode prev = EXTERNAL_NODE;
+        RedBlackNode prev = null;
         int key = newNode.key;
-        while (curr != EXTERNAL_NODE) {
+        while (curr != null) {
             prev = curr;
             if (key < curr.key)
                 curr = curr.left;
@@ -33,7 +35,7 @@ public class RedBlackTree {
                 curr = curr.right;
         }
         newNode.parent = prev;
-        if (prev == EXTERNAL_NODE) {
+        if (prev == null) {
             prev = newNode;
             newNode.parent = null;
         } else if (key < prev.key)
@@ -49,7 +51,7 @@ public class RedBlackTree {
             if (currParent == currParent.parent.left) {
                 RedBlackNode currUncle = currParent.parent.right;
                 //case 1: currUncle is red
-                if (currUncle.color.equals("RED")) {
+                if (currUncle != null && currUncle.color.equals("RED")) {
                     currParent.color = "BLACK";
                     currUncle.color = "BLACK";
                     currParent.parent.color = "RED";
@@ -72,7 +74,7 @@ public class RedBlackTree {
                 //currParent is the right child
                 RedBlackNode currUncle = currParent.parent.left;
                 //case 1: currUncle is red
-                if (currUncle.color.equals("RED")) {
+                if (currUncle != null && currUncle.color.equals("RED")) {
                     currParent.color = "BLACK";
                     currUncle.color = "BLACK";
                     currParent.parent.color = "RED";
@@ -96,47 +98,96 @@ public class RedBlackTree {
         root.color = "BLACK";
     }//end of fixUp
 
-    public void leftRotate(RedBlackNode curr){
+    public void leftRotate(RedBlackNode curr) {
         //set up the variables
         RedBlackNode currParent = curr.parent;
         RedBlackNode currRight = curr.right;
         RedBlackNode currRightLC = currRight.left;
+        RedBlackNode temp = curr;
         //transfer the right node of curr into curr's position
-        if(currParent.left == curr)
+        if (currParent != null && currParent.left != null && currParent.left == curr) {
             currParent.left = currRight;
-        else
+        } else if (currParent != null && currParent.right != null && currParent.right == curr) {
             currParent.right = currRight;
+        }
+        curr = currRight;
         //fix new curr's children.
-        currRight.left = curr;
-        curr.right = currRightLC;
+        curr.left = temp;
+        temp.right = currRightLC;
         //reassign parent pointers.
-        curr.parent = currRight;
-        currRight.parent = currParent;
-        currRightLC.parent = curr;
+        if (temp.parent == null)
+            root = curr;
+        temp.parent = curr;
+        if (curr != null)
+            curr.parent = currParent;
+        if (currRightLC != null)
+            currRightLC.parent = temp;
     } //end of left rotate
 
-    public void rightRotate(RedBlackNode curr){
+    public void rightRotate(RedBlackNode curr) {
         //set up the variables
         RedBlackNode currParent = curr.parent;
         RedBlackNode currLeft = curr.left;
         RedBlackNode currLeftRC = currLeft.right;
+        RedBlackNode temp = curr;
         //transfer the right node of curr into curr's position
-        if(currParent.left == curr)
+        if (currParent != null && currParent.left != null && currParent.left == curr) {
             currParent.left = currLeft;
-        else
+        } else if (currParent != null && currParent.right != null && currParent.right == curr) {
             currParent.right = currLeft;
+        }
+        curr = currLeft;
         //fix new curr's children.
-        currLeft.right = curr;
-        curr.left = currLeftRC;
+        curr.right = temp;
+        temp.left = currLeftRC;
         //reassign parent pointers.
-        curr.parent = currLeft;
-        currLeft.parent = currParent;
-        currLeftRC.parent = curr;
+        if (temp.parent == null)
+            root = curr;
+        temp.parent = currLeft;
+        if (curr != null)
+            curr.parent = currParent;
+        if (currLeftRC != null)
+            currLeftRC.parent = curr;
     } //end of right rotate
 
     public boolean isEmpty() {
-        return root.key == Integer.MAX_VALUE;
+        return root == null;
     } //end of isEmpty
 
+    public RedBlackNode search(int key) {
+        RedBlackNode curr = root;
+        RedBlackNode toRet = null;
+        while (curr != null && curr.key != key) {
+            if (curr.key < key) {
+                curr = curr.right;
+            } else {
+                curr = curr.left;
+            } //end of if-else
+        } //end of while
+        if (curr != null && curr.key == key)
+            toRet = curr;
+        return toRet;
+    }
+
+    public RedBlackNode getRoot() {
+        return root;
+    }
+
+    public void resetTree() {
+        root = null;
+    }
+
+    public int getDepth() {
+        return this.getDepth(this.root);
+    }
+
+    private int getDepth(RedBlackNode node) {
+        if (node != null) {
+            int right_depth;
+            int left_depth = this.getDepth(node.left);
+            return left_depth > (right_depth = this.getDepth(node.right)) ? left_depth + 1 : right_depth + 1;
+        }
+        return 0;
+    }
 
 }
