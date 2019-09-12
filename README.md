@@ -1,7 +1,7 @@
 # RedBlackTree
 A Red Black Tree written in Java and visually represented using a GUI.
 
-![GUI image](Red-Black Tree GUI.png)
+![GUI image](./Red-Black Tree GUI.png)
 
 Above is an image of how the GUI looks with some nodes inserted.
 The purpose of this project was to better my understanding of the way RB Tree's handled insertion and when to do 
