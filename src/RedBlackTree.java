@@ -6,10 +6,20 @@ public class RedBlackTree {
         root = null;
     }
 
+    /****************************************************
+     * insert
+     *
+     * insert a red node
+     ***************************************************/
     public void insert(Integer data) {
         insert(new RedBlackNode(null, null, null, "RED", data.intValue()));
     }
 
+    /****************************************************
+     * insert
+     *
+     * a helper method that inserts the given node
+     ***************************************************/
     public void insert(RedBlackNode newNode) {
         if (isEmpty()) {
             root = newNode;
@@ -21,19 +31,27 @@ public class RedBlackTree {
             fixUp(newNode);
         }
         root.color = "BLACK";
-    }
+    } //end of insert
 
+    /****************************************************
+     * bstInsert
+     *
+     * A regular binary search tree insert.
+     * Finds the correct placement off the nodes data and inserts.
+     ***************************************************/
     public void bstInsert(RedBlackNode newNode) {
         RedBlackNode curr = root;
         RedBlackNode prev = null;
-        int key = newNode.key;
+        int key = newNode.key; //the node value
+        //find the correct position of the node
         while (curr != null) {
             prev = curr;
             if (key < curr.key)
                 curr = curr.left;
             else
                 curr = curr.right;
-        }
+        } //end of while
+        //insert the node in the correct spot
         newNode.parent = prev;
         if (prev == null) {
             prev = newNode;
@@ -42,8 +60,13 @@ public class RedBlackTree {
             prev.left = newNode;
         else
             prev.right = newNode;
-    }
+    } //end of bstInsert
 
+    /****************************************************
+     * fixUp
+     *
+     * Corrects the insertion to work for the red black tree.
+     ***************************************************/
     public void fixUp(RedBlackNode curr) {
         RedBlackNode currParent = curr.parent;
         while (curr != root && !currParent.color.equals("BLACK")) {
@@ -98,6 +121,11 @@ public class RedBlackTree {
         root.color = "BLACK";
     }//end of fixUp
 
+    /****************************************************
+     * leftRotate
+     *
+     * perform a left rotation on the tree
+     ***************************************************/
     public void leftRotate(RedBlackNode curr) {
         //set up the variables
         RedBlackNode currParent = curr.parent;
@@ -109,7 +137,7 @@ public class RedBlackTree {
             currParent.left = currRight;
         } else if (currParent != null && currParent.right != null && currParent.right == curr) {
             currParent.right = currRight;
-        }
+        } //end of if
         curr = currRight;
         //fix new curr's children.
         curr.left = temp;
@@ -124,6 +152,11 @@ public class RedBlackTree {
             currRightLC.parent = temp;
     } //end of left rotate
 
+    /****************************************************
+     * rightRotate
+     *
+     * perform a right rotation on the tree
+     ***************************************************/
     public void rightRotate(RedBlackNode curr) {
         //set up the variables
         RedBlackNode currParent = curr.parent;
@@ -167,19 +200,19 @@ public class RedBlackTree {
         if (curr != null && curr.key == key)
             toRet = curr;
         return toRet;
-    }
+    } //end of search
 
     public RedBlackNode getRoot() {
         return root;
-    }
+    }//end of getRoot
 
     public void resetTree() {
         root = null;
-    }
+    } //end of resetTree
 
     public int getDepth() {
         return this.getDepth(this.root);
-    }
+    } //end of getDepth
 
     private int getDepth(RedBlackNode node) {
         if (node != null) {
@@ -188,6 +221,6 @@ public class RedBlackTree {
             return left_depth > (right_depth = this.getDepth(node.right)) ? left_depth + 1 : right_depth + 1;
         }
         return 0;
-    }
+    } //end of getDepth
 
 }
